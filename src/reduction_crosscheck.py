@@ -9,18 +9,18 @@ supports {a,s} and {b,s} to a relation among the tree's cut vectors:
           + u_a 1[v=a] - u_b 1[v=b] + w 1[v=s] ,
 
 where alpha, beta in (0,1), u_a = alpha x_a ell_a, u_b = beta x_b ell_b, and
-w = [(1-alpha) x_s - (1-beta) x_s'] ell_s.  By the cut-vector independence lemma, this
-relation must have its support exactly on the two children u', v' of the root, with
-c_{u'} = c_{v'} != 0 and c_v = 0 for every other vertex.
+w = [(1-alpha) x_s - (1-beta) x_s'] ell_s.  By the cut-vector *dependence* lemma, this
+relation holds iff the ancestor sums F(ell) = sum_{v ancestor of ell} c_v are constant
+over leaves (the earlier "support = {u', v'}" reading followed from an incorrect lemma
+and is not asserted here).
 
 This script takes every interior collision found by the LP oracle of
 global_collision.py, re-extracts the algebraic parameters (alpha, beta, u_a, u_b, w)
 directly from the LP solution, and verifies to machine precision that
 
   1. the relation sum_v c_v C_v = s * 1 holds,
-  2. the support of the coefficients is exactly {u', v'} (the two root children),
-  3. c_{u'} = c_{v'} != 0,
-  4. alpha != beta (the alpha = beta branch of the proof is infeasible).
+  2. the ancestor sums F(ell) = sum_{v ancestor of ell} c_v are constant over leaves,
+  3. alpha != beta (the alpha = beta branch degenerates to a boundary contact).
 
 Agreement on every collision cross-checks the algebraic reduction against the
 independent geometric (LP) oracle, the two routes of the proof.
@@ -115,17 +115,19 @@ def verify(T, a, b, s, tol=1e-7):
         lhs += cv * T.C[v]
     rel_ok = np.abs(lhs - soffs * np.ones(len(T.leaves))).max() < 1e-6
 
-    # (2) support == {u', v'}, (3) c_{u'} == c_{v'} != 0
-    uu, vv = T.children[T.root]
-    support = {v for v, cv in c.items() if abs(cv) > 1e-6}
-    support_ok = support == {uu, vv}
-    equal_ok = abs(c[uu] - c[vv]) < 1e-6 and abs(c[uu]) > 1e-6
+    # (2) ancestor sums F(ell) = sum_{v ancestor of ell} c_v are constant over leaves
+    F = np.zeros(len(T.leaves))
+    for li, ell in enumerate(T.leaves):
+        for v, cv in c.items():
+            if on_path(T, v, ell):
+                F[li] += cv
+    const_ok = F.max() - F.min() < 1e-6
 
-    # (4) alpha != beta
+    # (3) alpha != beta
     alpha_beta_ok = abs(alpha - beta) > 1e-6
 
-    return dict(rel=rel_ok, support=support_ok, equal=equal_ok,
-                alpha_beta=alpha_beta_ok, alpha=alpha, beta=beta)
+    return dict(rel=rel_ok, const=const_ok, alpha_beta=alpha_beta_ok,
+                alpha=alpha, beta=beta)
 
 
 def main() -> None:
@@ -137,7 +139,7 @@ def main() -> None:
     rng = np.random.default_rng(args.seed)
 
     ncol = 0
-    bad = {k: 0 for k in ("rel", "support", "equal", "alpha_beta")}
+    bad = {k: 0 for k in ("rel", "const", "alpha_beta")}
     for n in [int(v) for v in args.ns.split(",")]:
         for t in unlabeled_shapes(n):
             T = build_tree(t, "equal", rng)
