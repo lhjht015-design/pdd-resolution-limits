@@ -61,7 +61,8 @@ edit it to point at your copy. The required files are:
 | Cherry identity and $\Delta(\{a,b,c\})\ge 1$ (Table S1, rows 1–4) | `cherry_regression.py` | `python cherry_regression.py` |
 | Rank split `rank J = c + rank B` (Table S1, row 5) | `delta_test.py` | `python delta_test.py` |
 | Global $k=2$ collision + disjoint-support (Table S1, rows 7–9) | `global_collision.py` | `python global_collision.py` |
-| Shared-edge collision necessity (Conjecture 1; Supplement) | `shared_edge_regression.py` | `python shared_edge_regression.py --ns 5,6,7` |
+| Shared-edge collision necessity (Theorem 7; Supplement) | `shared_edge_regression.py` | `python shared_edge_regression.py --ns 5,6,7` |
+| Necessity proof cross-check (algebraic reduction vs.\ LP oracle) | `reduction_crosscheck.py` | `python reduction_crosscheck.py --ns 5,6,7` |
 | Counterfactual invisibility (Table S1, row 10; Table S2, last row) | `counterfactual.py` | `python counterfactual.py` |
 | EMP sibling co-occurrence (Table S2) | `sibling_census.py` | `python sibling_census.py` |
 | SILVA-independent validation (Table S2) | `silva_map.py` + `silva_agreement.py` | `python silva_map.py`, then `python silva_agreement.py` |
