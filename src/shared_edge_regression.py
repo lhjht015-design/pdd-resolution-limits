@@ -1,4 +1,4 @@
-"""Shared-edge collision regression for Conjecture 1 (RECOMB 2027).
+"""Shared-edge collision regression for the necessity theorem (Theorem 7, RECOMB 2027).
 
 Enumerates every *unlabeled* rooted binary tree shape (Catalan number C_{n-1})
 for n = 5, 6, 7, and for each shape every pair of supports {a,s}, {b,s} sharing
