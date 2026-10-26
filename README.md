@@ -15,8 +15,8 @@ paper's two-layer theory:
    the block decomposition).
 
 2. **Global support ambiguity.** For two placements sharing an edge, the degree-2-vertex
-   swap is a sufficient interior collision (Theorem 6), conjecturally the only one
-   (Conjecture 1, verified exhaustively for n = 5, 6, 7). The resolution
+   swap is a sufficient interior collision (Theorem 6), and it is the only one
+   (Theorem 7, verified exhaustively for n = 5, 6, 7). The resolution
    deficiency
    `Δ = 2k − rank J` then quantifies how much of a community is invisible to the
    measurement; a sibling pair of anchors always costs at least one degree of freedom.
